@@ -1,0 +1,31 @@
+<!doctype HTML>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>localStorage</title>
+
+        <style>
+            li{
+                font-weight: bold;
+            }
+            p{
+                font-style: italic;
+                font-weight: normal;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            var i;
+            for(i in localStorage){
+                var li = document.createElement('li');
+                var p = document.createElement('p');
+                li.innerHTML = decodeURIComponent(i);
+                p.innerHTML = localStorage[i];
+
+                li.appendChild(p);
+                document.getElementsByTagName('body')[0].appendChild(li);
+            }
+        </script>
+    </body>
+</html>

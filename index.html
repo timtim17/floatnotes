@@ -1,0 +1,140 @@
+<!doctype HTML>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>[DogFood] Notes</title>
+
+        <style>
+            body{
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                overflow: hidden;
+            }
+            iframe{
+                min-height: 100%;
+                min-width: 100%;
+                z-index: -1;
+            }
+
+            .float{
+                position: absolute;
+                top: 10px;
+                right: 20px;
+            }
+            .float_handle{
+                /*background-color: silver;
+                color: black;
+
+                border-radius: 5px;
+
+                padding-left: 5px;
+                padding-right: 5px;*/
+            }
+            #launcher{
+                z-index: 1;
+
+                transition: opacity 0.25s linear;
+                opacity: 0;
+
+                width: 200px;
+                height: 100px;
+            }
+            #launcher:hover{
+                opacity: 1;
+            }
+
+            #notes{
+                z-index: 2;
+                /*border: orange dashed 5px;*/
+                padding: 5px;
+                width: auto;
+                background-color: white;
+                display: none;
+
+                right: inherit;
+                left: 0;
+            }
+            #notes_handle{
+                cursor: move;
+            }
+            #notes_button{
+                padding: 0;
+
+                outline: none;
+                background: 0;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+        </style>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    </head>
+
+    <body>
+        <iframe frameborder="0"></iframe>
+        <script>
+            function getQueryVariable(variable)
+            {
+                   var query = window.location.search.substring(1);
+                   var vars = query.split("&");
+                   for (var i=0;i<vars.length;i++) {
+                           var pair = vars[i].split("=");
+                           if(pair[0] == variable){return pair[1];}
+                   }
+                   return(false);
+            }
+
+            $('iframe')[0].setAttribute('src', decodeURIComponent(getQueryVariable('url')));
+
+            if(!localStorage){
+                alert("WARNING: localStorage is not avaliable in this browser. Notes typed will not be saved.");
+            }
+        </script>
+
+        <div class="float" id="launcher"><img src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Actions-arrow-down-icon.png" width="15px" height="15px;" id="notes_button" /></div>
+        <div class="float" id="notes">
+            <div class="float_handle ui-widget-header" id="notes_handle">Notes</div>
+            <div class="float_content" id="notes_content">
+                <textarea id="notepad"
+                          autocomplete="on"
+                          cols="20"
+                          rows="2"
+                          spellcheck="true"
+                          wrap="soft"
+                          ></textarea>
+                <script>
+                    var a = localStorage.getItem(getQueryVariable('url'));
+                    if(a){
+                        $('#notepad')[0].value = a;
+                    }
+                </script>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        var shown = false;
+        $('#launcher').click(function(){
+            $('#notes').toggle();
+            shown = !shown;
+
+            if(shown){
+                $('#notes_button')[0].setAttribute('src', 'http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Actions-arrow-up-icon.png');
+            }else{
+                $('#notes_button')[0].setAttribute('src', 'http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Actions-arrow-down-icon.png');
+            }
+        });
+
+        $('#notes').draggable({
+            handle: ".float_handle"
+        });
+
+        $('#notepad').change(function(){
+            localStorage.setItem(getQueryVariable('url'), $('#notepad')[0].value);
+        });
+    </script>
+</html>
