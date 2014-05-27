@@ -1,4 +1,4 @@
-notes
+floatnotes
 =====
 
 > TODO: ADD README
