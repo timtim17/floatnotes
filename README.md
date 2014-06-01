@@ -1,5 +1,5 @@
 floatnotes
-=====
+==========
 
 > TODO: ADD README
 

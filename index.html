@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>[DogFood] Notes</title>
+        <title>FloatNotes</title>
 
         <style>
             body{
@@ -22,15 +22,15 @@
                 top: 10px;
                 right: 20px;
             }
-            .float_handle{
-                /*background-color: silver;
+            /*.float_handle{
+                background-color: silver;
                 color: black;
 
                 border-radius: 5px;
 
                 padding-left: 5px;
-                padding-right: 5px;*/
-            }
+                padding-right: 5px;
+            }*/
             #launcher{
                 z-index: 1;
 
@@ -69,9 +69,52 @@
                 right: 0;
             }
         </style>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+        
+        <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+        <script type="text/javascript">
+          var CLIENT_ID = '394443150317-s0ot5sgg8pmsrs23us1cmdbdla070tbn.apps.googleusercontent.com';
+          var SCOPES = [
+              'https://www.googleapis.com/auth/drive.file',
+              'https://www.googleapis.com/auth/userinfo.email',
+              'https://www.googleapis.com/auth/userinfo.profile',
+              // Add other scopes needed by your application.
+            ];
+
+          /**
+           * Called when the client library is loaded.
+           */
+          function handleClientLoad() {
+            checkAuth();
+          }
+
+          /**
+           * Check if the current user has authorized the application.
+           */
+          function checkAuth() {
+            gapi.auth.authorize(
+                {'client_id': CLIENT_ID, 'scope': SCOPES.join(' '), 'immediate': true},
+                handleAuthResult);
+          }
+
+          /**
+           * Called when authorization server replies.
+           *
+           * @param {Object} authResult Authorization result.
+           */
+          function handleAuthResult(authResult) {
+            if (authResult) {
+              // Access token has been successfully retrieved, requests can be sent to the API
+            } else {
+              // No access token could be retrieved, force the authorization flow.
+              gapi.auth.authorize(
+                  {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+                  handleAuthResult);
+            }
+          }
+        </script>
     </head>
 
     <body>
@@ -90,9 +133,9 @@
 
             $('iframe')[0].setAttribute('src', decodeURIComponent(getQueryVariable('url')));
 
-            if(!localStorage){
+            /*if(!localStorage){
                 alert("WARNING: localStorage is not avaliable in this browser. Notes typed will not be saved.");
-            }
+            }*/
         </script>
 
         <div class="float" id="launcher"><img src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Actions-arrow-down-icon.png" width="15px" height="15px;" id="notes_button" /></div>
@@ -107,12 +150,15 @@
                           wrap="soft"
                           ></textarea>
                 <script>
+                /*
                     var a = localStorage.getItem(getQueryVariable('url'));
                     if(a){
                         $('#notepad')[0].value = a;
                     }
+                */
                 </script>
             </div>
+            <button type="button" style="display:block;float:right;" id="button_save">Save</button>
         </div>
     </body>
 
@@ -133,8 +179,18 @@
             handle: ".float_handle"
         });
 
-        $('#notepad').change(function(){
+        /*$('#notepad').change(function(){
             localStorage.setItem(getQueryVariable('url'), $('#notepad')[0].value);
+        });*/
+        
+        $('#button_save').click(function(){
+            var json = JSON.stringify({
+                text: $('#notepad')[0].value
+            });
+            console.log(json);
+            
+            var blob = new Blob([json], {type: "application/json"});
+            console.log(blob, URL.createObjectURL(blob));
         });
     </script>
 </html>
