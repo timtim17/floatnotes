@@ -1,0 +1,155 @@
+<!doctype HTML>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>FloatNotes</title>
+
+        <link rel="stylesheet" href="float.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+        
+        <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+        <script>
+            var download = 'notes-' + new Date().toDateString()
+        </script>
+        <script type="text/javascript">
+          var CLIENT_ID = '394443150317-s0ot5sgg8pmsrs23us1cmdbdla070tbn.apps.googleusercontent.com';
+          var SCOPES = [
+              'https://www.googleapis.com/auth/drive.file',
+              'https://www.googleapis.com/auth/userinfo.email',
+              'https://www.googleapis.com/auth/userinfo.profile',
+              // Add other scopes needed by your application.
+            ];
+
+          /**
+           * Called when the client library is loaded.
+           */
+          function handleClientLoad() {
+            checkAuth();
+          }
+
+          /**
+           * Check if the current user has authorized the application.
+           */
+          function checkAuth() {
+            gapi.auth.authorize(
+                {'client_id': CLIENT_ID, 'scope': SCOPES.join(' '), 'immediate': true},
+                handleAuthResult);
+          }
+
+          /**
+           * Called when authorization server replies.
+           *
+           * @param {Object} authResult Authorization result.
+           */
+          function handleAuthResult(authResult) {
+            if (authResult) {
+              // Access token has been successfully retrieved, requests can be sent to the API
+            } else {
+              // No access token could be retrieved, force the authorization flow.
+              gapi.auth.authorize(
+                  {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+                  handleAuthResult);
+            }
+          }
+        </script>
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <iframe frameborder="0"></iframe>
+        </div>
+        <script>
+            function getQueryVariable(variable)
+            {
+                   var query = window.location.search.substring(1);
+                   var vars = query.split("&");
+                   for (var i=0;i<vars.length;i++) {
+                           var pair = vars[i].split("=");
+                           if(pair[0] == variable){return pair[1];}
+                   }
+                   return(false);
+            }
+
+            $('iframe')[0].setAttribute('src', decodeURIComponent(getQueryVariable('url')));
+
+            /*if(!localStorage){
+                alert("WARNING: localStorage is not avaliable in this browser. Notes typed will not be saved.");
+            }*/
+        </script>
+
+        <div class="float" id="launcher"><img src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Actions-arrow-down-icon.png" width="15px" height="15px;" id="launcher_button" /></div>
+        <div class="float" id="notes">
+            <div class="float_handle ui-widget-header" id="notes_handle">Notes</div>
+            <div class="float_content" id="notes_content">
+                <textarea id="notepad"
+                          autocomplete="on"
+                          cols="20"
+                          rows="2"
+                          spellcheck="true"
+                          wrap="soft"
+                          ></textarea>
+                <script>
+                /*
+                    var a = localStorage.getItem(getQueryVariable('url'));
+                    if(a){
+                        $('#notepad')[0].value = a;
+                    }
+                */
+                </script>
+            </div>
+                <input type="file" id="import" data-button="load" class="notes_button" accept="application/json" />
+            <script>
+                function handleFileSelect(evt) {
+                    var reader = new FileReader, file = evt.target.files[0];
+                    if(file.name.split('.').pop() !== "json"){alert("Not a Valid .JSON file. Please select a JSON file and try again."); return;}
+                    download = file.name.split('.')[0];
+                    reader.readAsText(file);
+                    reader.onload = function(){
+                        var d = JSON.parse(reader.result);
+                        if(d.authen !== "floatnotes"){alert("Invalid FloatNotes File. Ensure you have selected the correct file and try again."); return;}
+                        $('#notepad').text(d.text);
+                    }
+                }
+
+                  document.getElementById('import').addEventListener('change', handleFileSelect, false);
+            </script>
+                <button type="button" class="notes_button" data-button="save">Save</button>
+        </div>
+    </body>
+
+    <script>
+        var shown = false;
+        $('#launcher').click(function(){
+            $('#notes').toggle();
+            shown = !shown;
+
+            if(shown){
+                $('#launcher_button')[0].setAttribute('src', 'http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Actions-arrow-up-icon.png');
+            }else{
+                $('#launcher_button')[0].setAttribute('src', 'http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Actions-arrow-down-icon.png');
+            }
+        });
+
+        $('#notes').draggable({
+            handle: ".float_handle"
+        });
+
+        /*$('#notepad').change(function(){
+            localStorage.setItem(getQueryVariable('url'), $('#notepad')[0].value);
+        });*/
+        
+        $('.notes_button[data-button = "save"]').click(function(){
+            var json = JSON.stringify({
+                authen: 'floatnotes',
+                text: $('#notepad')[0].value
+            });
+            
+            var blob = new Blob([json], {type: "application/json"});
+            console.log(URL.createObjectURL(blob));
+            
+            var a = $('<a href="' + URL.createObjectURL(blob) + '" download="' + download + '.json" />')[0].click();
+        });
+    </script>
+</html>
