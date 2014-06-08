@@ -49,8 +49,8 @@ html, body, .wrapper {
     display: none;
 }
 #notepad{
-    width: 279px;
-    height: 82px;
+    min-width: 299px;
+    min-height: 82px;
     margin: 2px;
     border-width: 1px;
     padding: 2px;
