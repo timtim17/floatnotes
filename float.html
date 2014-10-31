@@ -5,14 +5,17 @@
         <title>FloatNotes</title>
 
         <link rel="stylesheet" href="float.css" />
+        
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
         
-        <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
         <script>
             var download = 'notes-' + new Date().toDateString()
         </script>
+        
+        <!-- TODO: Add Support for Upload to Google Drive
+        <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
         <script type="text/javascript">
           var CLIENT_ID = '{nope}';
           var SCOPES = [
@@ -53,7 +56,7 @@
                   handleAuthResult);
             }
           }
-        </script>
+        </script-->
     </head>
 
     <body>
